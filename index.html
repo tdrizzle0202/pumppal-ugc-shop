@@ -208,13 +208,7 @@
       <button class="chip" data-text="personal">Personal</button>
       <button class="chip" data-text="instruction">Direct</button>
     </div>
-    <div class="filter-row" data-tabs="visual">
-      <span class="filter-label">Visual</span>
-      <button class="chip" data-visual="physique">Physique</button>
-      <button class="chip" data-visual="exercise">Exercise</button>
-      <button class="chip" data-visual="face">Face</button>
-    </div>
-    <div class="filter-row" data-tabs="written,visual" id="hook-creator-row">
+    <div class="filter-row" data-tabs="visual" id="hook-creator-row">
       <span class="filter-label">Creator</span>
       <button class="chip active" data-creator="all">All creators</button>
       <button class="chip" data-creator="bend-with-natalie">@bend-with-natalie</button>
@@ -230,7 +224,7 @@
       <button class="chip" data-beat="mechanism">Mechanism</button>
       <button class="chip" data-beat="resolution">Resolution</button>
     </div>
-    <div class="search">
+    <div class="search" data-tabs="exercises,ctas,winners">
       <input type="search" id="search" placeholder="Search…">
     </div>
   </div>
@@ -421,7 +415,7 @@ function setTab(tab) {
   STATE.tab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
-  document.querySelectorAll('.filter-row[data-tabs]').forEach(row => {
+  document.querySelectorAll('[data-tabs]').forEach(row => {
     const tabs = (row.dataset.tabs || '').split(',');
     row.style.display = tabs.includes(tab) ? '' : 'none';
   });
