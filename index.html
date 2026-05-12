@@ -141,16 +141,8 @@
     color: var(--ink-3); margin-left: 8px; font-weight: 400; font-size: 12.5px;
   }
   .more-hint { color: var(--ink-3); font-size: 13px; padding: 20px 0; text-align: center; }
-  .cta-card .meta .title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); margin-bottom: 6px; min-height: 0; }
-  .framing-block { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .cta-beat { padding: 8px 10px; background: rgba(0,0,0,0.03); border-radius: 8px; }
-  .cta-beat-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
-  .cta-pattern { color: var(--ink-3); font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 6px; }
-  .cta-text-line { font-size: 12px; color: var(--ink-2); margin-top: 4px; font-style: italic; line-height: 1.4; }
-  .cta-overlay, .cta-voiceover { font-size: 11.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.4; }
-  @media (prefers-color-scheme: dark) {
-    .cta-beat { background: rgba(255,255,255,0.04); }
-  }
+  .cta-card .meta .title { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 4px; min-height: 0; }
+  .cta-text { font-size: 12.5px; color: var(--ink-2); margin-top: 10px; line-height: 1.5; }
   @media (max-width: 640px) {
     .brand { padding: 14px 18px 8px; }
     .brand h1 { font-size: 16px; }
@@ -382,28 +374,20 @@ function renderCTAs() {
 }
 
 function renderCTACard(c) {
-  const perf = '';
   const creator = c.creator ? '@' + c.creator : '';
   const tiktok = c.tiktok || '';
   const creatorLink = tiktok ? `<a href="${tiktok}" target="_blank" onclick="event.stopPropagation()">${creator}</a>` : creator;
   const beatLine = (c.beats && c.beats.length)
       ? c.beats.map(b => b[0].toUpperCase() + b.slice(1)).join(' · ')
-      : 'No framing';
-  const framingBlock = c.framing && Object.keys(c.framing).length
-      ? Object.entries(c.framing).map(([beat, info]) =>
-          `<div class="cta-beat"><div class="cta-beat-name">${beat[0].toUpperCase()}${beat.slice(1)} <span class="cta-pattern">${info.pattern}</span></div>${info.text ? `<div class="cta-text-line">"${info.text.replace(/"/g,'&quot;')}"</div>` : ''}</div>`).join('')
       : '';
-  const overlayLine = c.overlay_text ? `<div class="cta-overlay">📺 ${c.overlay_text}</div>` : '';
-  const voiceoverLine = c.voiceover_text ? `<div class="cta-voiceover">🎙 ${c.voiceover_text}</div>` : '';
+  const ctaText = c.voiceover_text || c.overlay_text || '';
   return `<div class="card cta-card" onclick="toggleMute(this)">
     <video data-src="${c.url}" preload="none" playsinline muted loop></video>
     <button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${c.url}')">Copy URL</button>
     <div class="meta">
-      <div class="title">${beatLine}</div>
+      ${beatLine ? `<div class="title">${beatLine}</div>` : ''}
       <div class="sub">${creatorLink}</div>
-      ${framingBlock ? `<div class="framing-block">${framingBlock}</div>` : ''}
-      ${overlayLine}
-      ${voiceoverLine}
+      ${ctaText ? `<div class="cta-text">${ctaText}</div>` : ''}
     </div>
   </div>`;
 }
