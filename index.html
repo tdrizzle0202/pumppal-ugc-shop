@@ -283,7 +283,7 @@ function renderCard(item, opts={}) {
   else if (item.views) subParts.push(fmtNum(item.views));
   const media = item.kind === 'winner' && !url ?
       `<img class="cover" src="${item.cover}" loading="lazy">` :
-      `<video data-src="${url}" preload="none" playsinline muted loop></video>`;
+      `<video src="${url}#t=0.1" preload="metadata" playsinline muted loop></video>`;
   return `<div class="card" onclick="toggleMute(this)">
     ${media}
     ${perf}
@@ -297,7 +297,14 @@ function renderCard(item, opts={}) {
 
 function toggleMute(card) {
   const v = card.querySelector('video');
-  if (v) v.muted = !v.muted;
+  if (!v) return;
+  if (v.paused) {
+    // Pause any other playing video first (one at a time = less bandwidth)
+    document.querySelectorAll('video').forEach(other => { if (other !== v) other.pause(); });
+    v.play().catch(()=>{});
+  } else {
+    v.muted = !v.muted;
+  }
 }
 
 function renderWritten() {
@@ -373,7 +380,7 @@ function renderCTACard(c) {
       : '';
   const ctaText = c.voiceover_text || c.overlay_text || '';
   return `<div class="card cta-card" onclick="toggleMute(this)">
-    <video data-src="${c.url}" preload="none" playsinline muted loop></video>
+    <video src="${c.url}#t=0.1" preload="metadata" playsinline muted loop></video>
     <button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${c.url}')">Copy URL</button>
     <div class="meta">
       ${beatLine ? `<div class="title">${beatLine}</div>` : ''}
@@ -460,27 +467,9 @@ document.getElementById('cnt-exercises').textContent = DATA.exercises.length;
 document.getElementById('cnt-ctas').textContent = DATA.ctas.length;
 document.getElementById('cnt-winners').textContent = DATA.winners.length;
 
-// IntersectionObserver: load video src + autoplay when scrolled into view, pause when out
-const io = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    const v = e.target;
-    if (e.isIntersecting) {
-      if (!v.src && v.dataset.src) v.src = v.dataset.src;
-      v.play().catch(()=>{});
-    } else {
-      v.pause();
-    }
-  }
-}, { threshold: 0.4 });
-
+// No autoplay. Tap a card to play. preload="metadata" loads just the first frame as poster.
 function wireVideos() {
-  document.querySelectorAll('video[data-src]').forEach(v => {
-    io.observe(v);
-    // Tap toggles between muted/unmuted on mobile
-    v.addEventListener('click', () => {
-      v.muted = !v.muted;
-    });
-  });
+  // Cards have onclick=toggleMute. Override the card click to play/pause instead.
 }
 
 bindFilters();
