@@ -50,11 +50,16 @@
   .tab .count { color: var(--ink-3); margin-left: 6px; font-weight: 400; font-size: 12px; }
   .toolbar {
     padding: 14px 24px;
-    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    display: flex; flex-direction: column; gap: 8px;
     border-top: 1px solid var(--line);
     background: rgba(250,250,250,0.85);
   }
   .filter-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .filter-label {
+    color: var(--ink-3); font-size: 11.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-right: 6px; min-width: 56px; display: inline-block;
+  }
   .chip {
     background: var(--surface); border: 1px solid var(--line); color: var(--ink-2);
     padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 500;
@@ -63,8 +68,7 @@
   .chip:hover { color: var(--ink); border-color: #d0d0d0; }
   .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
   .search {
-    flex: 1; min-width: 180px; max-width: 340px;
-    margin-left: auto;
+    width: 100%; max-width: 340px;
     position: relative;
   }
   .search input {
@@ -199,23 +203,27 @@
   </div>
   <div class="toolbar">
     <div class="filter-row" data-tabs="exercises,winners">
+      <span class="filter-label">Body</span>
       <button class="chip active" data-body="all">All</button>
       <button class="chip" data-body="abs_core">Abs · Core</button>
       <button class="chip" data-body="arms">Arms</button>
       <button class="chip" data-body="glutes_legs">Glutes · Legs</button>
     </div>
     <div class="filter-row" data-tabs="written">
+      <span class="filter-label">Text</span>
       <button class="chip" data-text="problem">Problem</button>
       <button class="chip" data-text="quantified">Quantified</button>
       <button class="chip" data-text="personal">Personal</button>
       <button class="chip" data-text="instruction">Direct</button>
     </div>
     <div class="filter-row" data-tabs="visual">
+      <span class="filter-label">Visual</span>
       <button class="chip" data-visual="physique">Physique</button>
       <button class="chip" data-visual="exercise">Exercise</button>
       <button class="chip" data-visual="face">Face</button>
     </div>
     <div class="filter-row" data-tabs="written,visual" id="hook-creator-row">
+      <span class="filter-label">Creator</span>
       <button class="chip active" data-creator="all">All creators</button>
       <button class="chip" data-creator="bend-with-natalie">@bend-with-natalie</button>
       <button class="chip" data-creator="heloomelloo">@heloomelloo</button>
@@ -224,6 +232,7 @@
       <button class="chip" data-creator="sashalusslover">@sashalusslover</button>
     </div>
     <div class="filter-row" data-tabs="ctas">
+      <span class="filter-label">Beats</span>
       <button class="chip" data-beat="pain">Pain</button>
       <button class="chip" data-beat="personal">Personal</button>
       <button class="chip" data-beat="mechanism">Mechanism</button>
