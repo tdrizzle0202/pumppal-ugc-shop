@@ -224,9 +224,6 @@
       <button class="chip" data-beat="mechanism">Mechanism</button>
       <button class="chip" data-beat="resolution">Resolution</button>
     </div>
-    <div class="search" data-tabs="exercises,ctas,winners">
-      <input type="search" id="search" placeholder="Search…">
-    </div>
   </div>
 </header>
 
@@ -455,10 +452,6 @@ function bindFilters() {
     else STATE.beats.delete(c.dataset.beat);
     renderCTAs();
   });
-  document.getElementById('search').oninput = (e) => {
-    STATE.q = e.target.value;
-    render();
-  };
 }
 
 document.getElementById('cnt-written').textContent = DATA.hooks.length;
