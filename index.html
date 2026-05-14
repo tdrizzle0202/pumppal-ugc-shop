@@ -294,7 +294,7 @@ function renderCard(item, opts={}) {
   else if (item.views) subParts.push(fmtNum(item.views));
   const media = item.kind === 'winner' && !url ?
       `<img class="cover" src="${item.cover}" loading="lazy">` :
-      `<video src="${url}#t=0.1" preload="metadata" playsinline muted loop controls></video>`;
+      `<video data-src="${url}" preload="none" playsinline muted loop></video>`;
   return `<div class="card" onclick="toggleMute(this)">
     ${media}
     ${perf}
@@ -391,7 +391,7 @@ function renderCTACard(c) {
       : '';
   const ctaText = c.voiceover_text || c.overlay_text || '';
   return `<div class="card cta-card" onclick="toggleMute(this)">
-    <video src="${c.url}#t=0.1" preload="metadata" playsinline muted loop controls></video>
+    <video data-src="${c.url}" preload="none" playsinline muted loop></video>
     <button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${c.url}')">Copy URL</button>
     <div class="meta">
       ${beatLine ? `<div class="title">${beatLine}</div>` : ''}
@@ -497,9 +497,26 @@ document.getElementById('cnt-ctas').textContent = DATA.ctas.length;
 document.getElementById('cnt-winners').textContent = DATA.winners.length;
 document.getElementById('cnt-references').textContent = DATA.references.length;
 
-// No autoplay. Tap a card to play. preload="metadata" loads just the first frame as poster.
+// Autoplay-on-scroll. Videos load + play muted when in viewport, pause when out.
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    const v = e.target;
+    if (e.isIntersecting) {
+      if (!v.src && v.dataset.src) v.src = v.dataset.src;
+      v.play().catch(()=>{});
+    } else {
+      v.pause();
+    }
+  }
+}, { threshold: 0.3 });
+
 function wireVideos() {
-  // Cards have onclick=toggleMute. Override the card click to play/pause instead.
+  document.querySelectorAll('video[data-src]').forEach(v => {
+    if (!v.dataset.observed) {
+      v.dataset.observed = '1';
+      io.observe(v);
+    }
+  });
 }
 
 bindFilters();
