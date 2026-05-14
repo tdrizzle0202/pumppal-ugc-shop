@@ -273,6 +273,8 @@ function copyUrl(btn, url) {
 
 function bodyMatches(item) {
   if (STATE.body === 'all') return true;
+  // Items with no body_group always pass through (don't get hidden by body filter)
+  if (!item.body_group) return true;
   return item.body_group === STATE.body;
 }
 
