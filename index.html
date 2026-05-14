@@ -323,11 +323,11 @@ function renderWritten() {
   const items = DATA.hooks.filter(h => {
     if (STATE.creator !== 'all' && h.creator !== STATE.creator) return false;
     for (const t of STATE.text) if (!h['text_' + t]) return false;
-    if (!searchMatches(h, ['hook_text', 'creator', 'opening_frame'])) return false;
+    if (!searchMatches(h, ['hook_text_overlay', 'hook_text', 'creator', 'opening_frame'])) return false;
     return true;
   });
   if (!items.length) { grid.innerHTML = '<div class="empty">No hooks match.</div>'; return; }
-  grid.innerHTML = items.map(h => renderCard(h, { title: h.hook_text })).join('');
+  grid.innerHTML = items.map(h => renderCard(h, { title: h.hook_text_overlay || h.hook_text })).join('');
 }
 
 function renderVisual() {
