@@ -100,6 +100,9 @@
   }
   .carousel::-webkit-scrollbar { display: none; }
   .carousel .card { flex: 0 0 180px; scroll-snap-align: start; }
+  @media (max-width: 640px) {
+    .carousel .card { flex: 0 0 42%; }
+  }
   .card {
     background: var(--surface);
     border-radius: var(--radius);
@@ -282,20 +285,17 @@ function searchMatches(item, fields) {
 
 function renderCard(item, opts={}) {
   const url = item.url || '';
-  const perf = perfDot(item.save_rate || 0);
   const creator = item.creator ? '@' + item.creator : '';
   const tiktok = item.tiktok || '';
   const creatorLink = tiktok ? `<a href="${tiktok}" target="_blank" onclick="event.stopPropagation()">${creator}</a>` : creator;
   const title = opts.title || '';
   const subParts = [creatorLink];
-  if (item.saves) subParts.push(fmtNum(item.saves) + ' saves');
-  else if (item.views) subParts.push(fmtNum(item.views));
+  if (item.views) subParts.push(fmtNum(item.views) + ' views');
   const media = item.kind === 'winner' && !url ?
       `<img class="cover" src="${item.cover}" loading="lazy">` :
       `<video data-src="${url}" preload="none" playsinline muted loop></video>`;
   return `<div class="card" onclick="toggleMute(this)">
     ${media}
-    ${perf}
     ${url ? `<button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${url}')">Copy URL</button>` : ''}
     <div class="meta">
       <div class="title">${title || '&nbsp;'}</div>
