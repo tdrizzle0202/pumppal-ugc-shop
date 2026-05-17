@@ -178,7 +178,7 @@
     font-size: 12px;
     font-weight: 600;
     display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-    transition: all 0.15s;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
     cursor: pointer;
     overflow: hidden;
   }
@@ -204,11 +204,18 @@
   #finish-btn:disabled { opacity: 0.3; pointer-events: none; }
   body { padding-bottom: 80px; }
   @media (max-width: 520px) {
-    #finish-bar { padding: 5px 5px 5px 6px; gap: 4px; bottom: 10px; left: 8px; right: 8px; }
-    #slots { gap: 3px; }
+    #finish-bar {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 8px;
+      gap: 8px;
+      bottom: 10px; left: 8px; right: 8px;
+      border-radius: 18px;
+    }
+    #slots { gap: 4px; }
     .slot { padding: 8px 4px; font-size: 10.5px; border-width: 1px; }
     .slot .x { font-size: 11px; }
-    #finish-btn { padding: 9px 12px; font-size: 12px; }
+    #finish-btn { padding: 10px 16px; font-size: 13px; width: 100%; }
   }
   .card {
     background: var(--surface);
@@ -266,8 +273,8 @@
   .cta-text { font-size: 12.5px; color: var(--ink-2); margin-top: 10px; line-height: 1.5; }
   @media (max-width: 640px) {
     .brand { padding: 14px 18px 8px; }
-    .brand h1 { font-size: 16px; }
-    .brand .sub { display: none; }
+    .brand h1 { font-size: 17px; }
+    .brand .sub { font-size: 12px; flex-basis: 100%; margin-left: 48px; }
     .tabs { padding: 0 8px; }
     .tab { padding: 10px 10px; font-size: 13px; }
     .toolbar { padding: 10px 16px; }
@@ -359,9 +366,22 @@ function togglePick(item) {
     }
   }
   savePicks();
-  invalidateAll();
-  renderActive();
+  refreshCardStates();
   updateFinishBar();
+}
+
+function refreshCardStates() {
+  document.querySelectorAll('.card[data-card-url]').forEach(card => {
+    const url = card.dataset.cardUrl;
+    const item = findItemByUrl(url);
+    if (!item) return;
+    const picked = isPicked(item);
+    const disabled = !picked && !canPick(item);
+    card.classList.toggle('picked', picked);
+    card.classList.toggle('pick-disabled', disabled);
+    const btn = card.querySelector('.pick-btn[data-pick]');
+    if (btn) btn.textContent = picked ? '✓' : '+';
+  });
 }
 
 function findItemByUrl(url) {
@@ -387,7 +407,7 @@ function handleCopy(btn) {
   if (!item) return;
   if (item.hook_pick) PICKS.hook = item.hook_pick;
   if (item.exercise_picks && item.exercise_picks.length) PICKS.exercises = item.exercise_picks.slice(0, 3);
-  invalidateAll(); renderActive(); updateFinishBar();
+  savePicks(); refreshCardStates(); updateFinishBar();
 }
 
 function setSlot(id, filled, label) {
@@ -415,7 +435,7 @@ function removeSlot(slotId) {
     const idx = parseInt(slotId.slice(7), 10);
     if (PICKS.exercises[idx]) PICKS.exercises.splice(idx, 1);
   }
-  invalidateAll(); renderActive(); updateFinishBar();
+  savePicks(); refreshCardStates(); updateFinishBar();
 }
 
 function gotoFinish() {
