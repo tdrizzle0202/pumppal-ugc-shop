@@ -13,14 +13,22 @@
   header .actions { display: flex; gap: 8px; }
   .btn { background: var(--surface); color: var(--ink); border: 1px solid var(--line); padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; }
   .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 20px 80px; }
-  section.pick { margin-bottom: 28px; }
-  .pick .label { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 6px; }
-  .pick .title { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: var(--ink); }
-  .pick .creator { font-size: 12.5px; color: var(--ink-2); margin-bottom: 10px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 20px 80px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .pick { display: flex; flex-direction: column; }
+  .pick .label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 6px; }
+  .pick .title { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ink); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 34px; }
+  .pick .creator { font-size: 11.5px; color: var(--ink-2); margin-bottom: 8px; }
   .pick .creator a { color: var(--ink-2); text-decoration: none; }
-  .pick video { width: 100%; max-width: 360px; aspect-ratio: 9/16; background: #000; border-radius: var(--radius); box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.06); }
-  .pick .body-text { font-size: 13px; color: var(--ink-2); margin-top: 8px; line-height: 1.5; max-width: 360px; }
+  .pick video { width: 100%; aspect-ratio: 9/16; background: #000; border-radius: var(--radius); box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.06); display: block; }
+  .pick .body-text { font-size: 12px; color: var(--ink-2); margin-top: 8px; line-height: 1.4; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .pick .title { font-size: 12px; min-height: 30px; }
+  }
   .empty { text-align: center; padding: 80px 20px; color: var(--ink-3); }
   .empty a { color: var(--ink); font-weight: 600; }
   @media (prefers-color-scheme: dark) {
@@ -50,20 +58,20 @@ function clearPicks() {
   window.location.href = 'index.html';
 }
 
-function clipSection(label, item, opts={}) {
+function clipCell(label, item, opts={}) {
   if (!item) return '';
   const creator = item.creator ? '@' + item.creator : '';
   const tiktok = item.tiktok || '';
   const creatorLine = tiktok ? `<a href="${tiktok}" target="_blank">${creator}</a>` : creator;
   const title = opts.title || '';
   const bodyText = opts.bodyText || '';
-  return `<section class="pick">
+  return `<div class="pick">
     <div class="label">${label}</div>
-    ${title ? `<div class="title">${title}</div>` : ''}
-    ${creator ? `<div class="creator">${creatorLine}</div>` : ''}
     <video src="${item.url}" controls playsinline preload="metadata"></video>
+    ${title ? `<div class="title" style="margin-top:8px">${title}</div>` : ''}
+    ${creator ? `<div class="creator">${creatorLine}</div>` : ''}
     ${bodyText ? `<div class="body-text">${bodyText}</div>` : ''}
-  </section>`;
+  </div>`;
 }
 
 const main = document.getElementById('main');
@@ -73,12 +81,13 @@ const hasAny = PICKS.hook || exercises.length || PICKS.cta;
 if (!hasAny) {
   main.innerHTML = '<div class="empty">No picks yet. <a href="index.html">Go pick →</a></div>';
 } else {
-  let html = '';
-  html += clipSection('Hook', PICKS.hook, { title: PICKS.hook?.hook_text });
+  let html = '<div class="grid">';
+  html += clipCell('Hook', PICKS.hook, { title: PICKS.hook?.hook_text });
   exercises.forEach((e, i) => {
-    html += clipSection(`Exercise ${i+1}`, e, { title: e.exercise_name });
+    html += clipCell(`Exercise ${i+1}`, e, { title: e.exercise_name });
   });
-  html += clipSection('CTA', PICKS.cta, { bodyText: PICKS.cta?.voiceover_text || PICKS.cta?.overlay_text });
+  html += clipCell('CTA', PICKS.cta, { bodyText: PICKS.cta?.voiceover_text || PICKS.cta?.overlay_text });
+  html += '</div>';
   main.innerHTML = html;
 }
 </script>
