@@ -340,7 +340,13 @@ function renderVisual() {
     const k = h.creator || 'unknown';
     (groups[k] = groups[k] || []).push(h);
   }
-  const entries = Object.entries(groups).sort((a,b) => b[1].length - a[1].length);
+  const HOOK_ORDER = ['notbyami', 'islarune', 'heloomelloo', 'sashalusslover'];
+  const entries = Object.entries(groups).sort((a,b) => {
+    const ia = HOOK_ORDER.indexOf(a[0]); const ib = HOOK_ORDER.indexOf(b[0]);
+    const ra = ia === -1 ? 999 : ia; const rb = ib === -1 ? 999 : ib;
+    if (ra !== rb) return ra - rb;
+    return b[1].length - a[1].length;
+  });
   root.innerHTML = entries.map(([creator, clips]) => {
     const cards = clips.map(h => renderCard(h, { title: h.opening_frame || h.hook_text })).join('');
     return `<div class="ex-section"><h3>@${creator}<span class="ex-count">${clips.length} hook${clips.length>1?'s':''}</span></h3><div class="carousel">${cards}</div></div>`;
