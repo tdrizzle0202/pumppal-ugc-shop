@@ -293,12 +293,14 @@ function renderCard(item, opts={}) {
   const creatorLink = tiktok ? `<a href="${tiktok}" target="_blank" onclick="event.stopPropagation()">${creator}</a>` : creator;
   const title = opts.title || '';
   const subParts = [creatorLink];
-  if (item.views) subParts.push(fmtNum(item.views) + ' views');
+  if (item.views && !opts.topPill) subParts.push(fmtNum(item.views) + ' views');
+  const topPill = opts.topPill ? `<span class="perf">${opts.topPill}</span>` : '';
   const media = item.kind === 'winner' && !url ?
       `<img class="cover" src="${item.cover}" loading="lazy">` :
       `<video data-src="${url}" preload="none" playsinline muted loop></video>`;
   return `<div class="card" onclick="toggleMute(this)">
     ${media}
+    ${topPill}
     ${url ? `<button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${url}')">Copy URL</button>` : ''}
     <div class="meta">
       <div class="title">${title || '&nbsp;'}</div>
@@ -341,7 +343,7 @@ function renderVisual() {
     return b[1].length - a[1].length;
   });
   root.innerHTML = entries.map(([creator, clips]) => {
-    const cards = clips.map(h => renderCard(h, { title: h.opening_frame || h.hook_text })).join('');
+    const cards = clips.map(h => renderCard(h, { title: h.opening_frame || h.hook_text, topPill: h.views ? fmtNum(h.views) + ' views' : '' })).join('');
     return `<div class="ex-section"><h3>@${creator}<span class="ex-count">${clips.length} hook${clips.length>1?'s':''}</span></h3><div class="carousel">${cards}</div></div>`;
   }).join('');
 }
