@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your Picks · PumpPal</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root { --bg: #fafafa; --surface: #fff; --line: #ececec; --ink: #0a0a0a; --ink-2: #5a5a5a; --ink-3: #9a9a9a; --radius: 14px; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  header { padding: 20px 24px 14px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); position: sticky; top: 0; z-index: 10; }
+  header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+  header .actions { display: flex; gap: 8px; }
+  .btn { background: var(--surface); color: var(--ink); border: 1px solid var(--line); padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 20px 80px; }
+  section.pick { margin-bottom: 28px; }
+  .pick .label { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 6px; }
+  .pick .title { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: var(--ink); }
+  .pick .creator { font-size: 12.5px; color: var(--ink-2); margin-bottom: 10px; }
+  .pick .creator a { color: var(--ink-2); text-decoration: none; }
+  .pick video { width: 100%; max-width: 360px; aspect-ratio: 9/16; background: #000; border-radius: var(--radius); box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.06); }
+  .pick .body-text { font-size: 13px; color: var(--ink-2); margin-top: 8px; line-height: 1.5; max-width: 360px; }
+  .empty { text-align: center; padding: 80px 20px; color: var(--ink-3); }
+  .empty a { color: var(--ink); font-weight: 600; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #000; --surface: #141414; --line: #1f1f1f; --ink: #f5f5f5; --ink-2: #b0b0b0; --ink-3: #6b6b6b; }
+    .btn-primary { background: #fff; color: #000; border-color: #fff; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Your picks</h1>
+  <div class="actions">
+    <a class="btn" href="index.html">← Back</a>
+    <button class="btn" onclick="clearPicks()">Clear</button>
+  </div>
+</header>
+<main id="main"></main>
+<script>
+const PICKS_KEY = 'pumppal_picks_v1';
+const PICKS = (() => {
+  try { return JSON.parse(localStorage.getItem(PICKS_KEY)) || {}; }
+  catch(e) { return {}; }
+})();
+
+function clearPicks() {
+  if (!confirm('Clear all picks?')) return;
+  localStorage.removeItem(PICKS_KEY);
+  location.reload();
+}
+
+function clipSection(label, item, opts={}) {
+  if (!item) return '';
+  const creator = item.creator ? '@' + item.creator : '';
+  const tiktok = item.tiktok || '';
+  const creatorLine = tiktok ? `<a href="${tiktok}" target="_blank">${creator}</a>` : creator;
+  const title = opts.title || '';
+  const bodyText = opts.bodyText || '';
+  return `<section class="pick">
+    <div class="label">${label}</div>
+    ${title ? `<div class="title">${title}</div>` : ''}
+    ${creator ? `<div class="creator">${creatorLine}</div>` : ''}
+    <video src="${item.url}" controls playsinline preload="metadata"></video>
+    ${bodyText ? `<div class="body-text">${bodyText}</div>` : ''}
+  </section>`;
+}
+
+const main = document.getElementById('main');
+const exercises = PICKS.exercises || [];
+const hasAny = PICKS.hook || exercises.length || PICKS.cta;
+
+if (!hasAny) {
+  main.innerHTML = '<div class="empty">No picks yet. <a href="index.html">Go pick →</a></div>';
+} else {
+  let html = '';
+  html += clipSection('Hook', PICKS.hook, { title: PICKS.hook?.hook_text });
+  exercises.forEach((e, i) => {
+    html += clipSection(`Exercise ${i+1}`, e, { title: e.exercise_name });
+  });
+  html += clipSection('CTA', PICKS.cta, { bodyText: PICKS.cta?.voiceover_text || PICKS.cta?.overlay_text });
+  main.innerHTML = html;
+}
+</script>
+</body>
+</html>
