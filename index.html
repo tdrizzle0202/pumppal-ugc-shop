@@ -725,7 +725,7 @@ const io = new IntersectionObserver((entries) => {
       v.pause();
     }
   }
-}, { threshold: 0.3 });
+}, { threshold: 0.05, rootMargin: '0px 100px' });
 
 function wireVideos() {
   document.querySelectorAll('video[data-src]').forEach(v => {
