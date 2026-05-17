@@ -610,16 +610,7 @@ function renderCTAs() {
     return true;
   });
   if (!items.length) { root.innerHTML = '<div class="empty">No CTAs match.</div>'; return; }
-  const groups = {};
-  for (const c of items) {
-    const k = c.creator || 'unknown';
-    (groups[k] = groups[k] || []).push(c);
-  }
-  const entries = Object.entries(groups).sort((a,b) => b[1].length - a[1].length);
-  root.innerHTML = entries.map(([creator, clips]) => {
-    const cards = clips.map(c => renderCard(c, { title: c.overlay_text || c.voiceover_text || '' })).join('');
-    return `<div class="ex-section"><h3>@${creator}<span class="ex-count">${clips.length} CTA${clips.length>1?'s':''}</span></h3><div class="carousel">${cards}</div></div>`;
-  }).join('');
+  root.innerHTML = `<div class="grid">${items.map(c => renderCard(c, { title: c.overlay_text || c.voiceover_text || '' })).join('')}</div>`;
 }
 
 function renderReferences() {
