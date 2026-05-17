@@ -34,21 +34,20 @@
   <h1>Your picks</h1>
   <div class="actions">
     <a class="btn" href="index.html">← Back</a>
-    <button class="btn" onclick="clearPicks()">Clear</button>
+    <button class="btn" onclick="clearPicks()">Start over</button>
   </div>
 </header>
 <main id="main"></main>
 <script>
-const PICKS_KEY = 'pumppal_picks_v1';
 const PICKS = (() => {
-  try { return JSON.parse(localStorage.getItem(PICKS_KEY)) || {}; }
-  catch(e) { return {}; }
+  try {
+    const p = new URLSearchParams(location.search).get('p');
+    return p ? JSON.parse(decodeURIComponent(p)) : {};
+  } catch(e) { return {}; }
 })();
 
 function clearPicks() {
-  if (!confirm('Clear all picks?')) return;
-  localStorage.removeItem(PICKS_KEY);
-  location.reload();
+  window.location.href = 'index.html';
 }
 
 function clipSection(label, item, opts={}) {
