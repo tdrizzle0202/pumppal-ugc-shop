@@ -39,7 +39,7 @@
   <h1>Your picks</h1>
   <div class="actions">
     <a class="btn" href="index.html">← Back</a>
-    <a class="btn btn-primary" href="https://www.capcut.com/" target="_blank" rel="noopener">Edit in CapCut →</a>
+    <a class="btn btn-primary" href="capcut://" rel="noopener">Edit in CapCut →</a>
   </div>
 </header>
 <main id="main"></main>
@@ -64,7 +64,7 @@ function clipCell(label, item, opts={}) {
   const bodyText = opts.bodyText || '';
   return `<div class="pick">
     <div class="label">${label}</div>
-    <video src="${item.url}" autoplay muted loop playsinline webkit-playsinline controls preload="auto" disablepictureinpicture></video>
+    <video src="${item.url}" autoplay muted playsinline webkit-playsinline controls preload="auto" disablepictureinpicture onended="this.currentTime=0;this.play();"></video>
     ${title ? `<div class="title" style="margin-top:8px">${title}</div>` : ''}
     ${creator ? `<div class="creator">${creatorLine}</div>` : ''}
     ${bodyText ? `<div class="body-text">${bodyText}</div>` : ''}
