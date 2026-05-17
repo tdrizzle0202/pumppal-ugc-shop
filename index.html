@@ -251,15 +251,15 @@
   .meta .sub a { color: var(--ink-2); text-decoration: none; }
   .meta .sub a:hover { color: var(--ink); }
   .copy-btn {
-    position: absolute; bottom: 10px; right: 10px;
+    position: absolute; bottom: 8px; left: 8px;
     background: rgba(255,255,255,0.95); color: var(--ink);
-    border: none; padding: 5px 10px; border-radius: 999px;
-    font-size: 11px; font-weight: 500;
-    opacity: 0; transition: opacity 0.15s;
-    backdrop-filter: blur(8px);
+    border: none; padding: 4px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 600;
+    transition: background 0.15s;
+    cursor: pointer;
+    z-index: 4;
   }
-  .card:hover .copy-btn { opacity: 1; }
-  .copy-btn.copied { background: var(--ink); color: #fff; opacity: 1; }
+  .copy-btn.copied { background: var(--ink); color: #fff; }
   .empty { color: var(--ink-3); text-align: center; padding: 80px 20px; font-size: 14px; }
   .ex-section { margin-bottom: 40px; }
   .ex-section h3 {
@@ -519,11 +519,15 @@ function renderCard(item, opts={}) {
   } else if (copyable) {
     pickBtn = `<button class="pick-btn" data-copy="${encodeURIComponent(url)}" onclick="event.stopPropagation();handleCopy(this)" title="Use this whole video">+</button>`;
   }
+  const urlBtn = (item.kind === 'reference' || item.kind === 'winner') && url
+    ? `<button class="copy-btn" onclick="event.stopPropagation();copyUrl(this, '${url}')">Copy URL</button>`
+    : '';
   return `<div class="${classes.join(' ')}" data-card-url="${url}" onclick="toggleMute(this)">
     <div class="media-wrap">
       ${media}
       ${topPill}
       ${pickBtn}
+      ${urlBtn}
     </div>
     <div class="meta">
       <div class="title">${title || '&nbsp;'}</div>
