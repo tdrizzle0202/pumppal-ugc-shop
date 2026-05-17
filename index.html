@@ -229,7 +229,11 @@
   }
   .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
   .media-wrap { position: relative; }
-  .card video, .card img.cover {
+  .card video {
+    width: 100%; aspect-ratio: 9/16; object-fit: cover;
+    background: #000; display: block;
+  }
+  .card img.cover {
     width: 100%; aspect-ratio: 9/16; object-fit: cover;
     background: #f0f0f0; display: block;
   }
