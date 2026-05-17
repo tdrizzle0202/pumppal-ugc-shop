@@ -99,9 +99,16 @@
     scrollbar-width: none;
   }
   .carousel::-webkit-scrollbar { display: none; }
-  .carousel .card { flex: 0 0 180px; scroll-snap-align: start; }
+  .carousel .card { flex: 0 0 calc(28% - 10px); scroll-snap-align: start; }
   @media (max-width: 640px) {
     .carousel .card { flex: 0 0 42%; }
+  }
+  @media (min-width: 1100px) {
+    .carousel .card { flex: 0 0 calc(18% - 10px); }
+  }
+  .carousel, .jump-row {
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, black calc(100% - 48px), transparent);
   }
   .jump-row {
     flex-wrap: nowrap !important;
